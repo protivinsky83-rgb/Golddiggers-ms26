@@ -1,0 +1,139 @@
+{
+  "matches": [
+    {
+      "id": 1,
+      "team1": "Česko",
+      "team2": "Kanada",
+      "flag1": "🇨🇿",
+      "flag2": "🇨🇦",
+      "date": "2026-06-21",
+      "time": "14:00",
+      "stage": "group",
+      "stadium": "Parc Olympique",
+      "group": "A",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 2,
+      "team1": "Francie",
+      "team2": "Německo",
+      "flag1": "🇫🇷",
+      "flag2": "🇩🇪",
+      "date": "2026-06-21",
+      "time": "17:00",
+      "stage": "group",
+      "stadium": "SoFi Stadium",
+      "group": "A",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 3,
+      "team1": "Argentina",
+      "team2": "Brazílie",
+      "flag1": "🇦🇷",
+      "flag2": "🇧🇷",
+      "date": "2026-06-22",
+      "time": "20:00",
+      "stage": "group",
+      "stadium": "MetLife Stadium",
+      "group": "B",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 4,
+      "team1": "Japonsko",
+      "team2": "Austrálie",
+      "flag1": "🇯🇵",
+      "flag2": "🇦🇺",
+      "date": "2026-06-22",
+      "time": "23:00",
+      "stage": "group",
+      "stadium": "Levi's Stadium",
+      "group": "B",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 5,
+      "team1": "Španělsko",
+      "team2": "Itálie",
+      "flag1": "🇪🇸",
+      "flag2": "🇮🇹",
+      "date": "2026-06-23",
+      "time": "16:00",
+      "stage": "group",
+      "stadium": "AT&T Stadium",
+      "group": "C",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 6,
+      "team1": "Holandsko",
+      "team2": "Belgie",
+      "flag1": "🇳🇱",
+      "flag2": "🇧🇪",
+      "date": "2026-06-23",
+      "time": "19:00",
+      "stage": "group",
+      "stadium": "Mercedes-Benz Stadium",
+      "group": "C",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 7,
+      "team1": "Anglie",
+      "team2": "Skotsko",
+      "flag1": "🇬🇧",
+      "flag2": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+      "date": "2026-06-24",
+      "time": "13:00",
+      "stage": "group",
+      "stadium": "Arrowhead Stadium",
+      "group": "D",
+      "result": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 8,
+      "team1": "Portugálsko",
+      "team2": "Řecko",
+      "flag1": "🇵🇹",
+      "flag2": "🇬🇷",
+      "date": "2026-06-24",
+      "time": "16:00",
+      "stage": "group",
+      "stadium": "Caesars Superdome",
+      "group": "D",
+      "result": null,
+      "status": "scheduled"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Protivinsky",
+      "email": "protivinsky83@gmail.com",
+      "bets": [],
+      "points": 0
+    },
+    {
+      "id": 2,
+      "name": "Jan Novák",
+      "email": "jan@example.com",
+      "bets": [],
+      "points": 0
+    },
+    {
+      "id": 3,
+      "name": "Marie Svobodová",
+      "email": "marie@example.com",
+      "bets": [],
+      "points": 0
+    }
+  ]
+}

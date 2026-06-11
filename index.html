@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipování MS 2026 - Golddiggers</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ Tipování Mistrovství Světa 2026</h1>
+            <p class="subtitle">Tipuj výsledky a sbírej body!</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="matches">Zápasy</button>
+            <button class="tab-btn" data-tab="leaderboard">Leaderboard</button>
+            <button class="tab-btn" data-tab="my-bets">Moje tipy</button>
+        </nav>
+
+        <!-- Tab: Zápasy -->
+        <section id="matches" class="tab-content active">
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Hledej tým...">
+                <select id="stageFilter">
+                    <option value="">Všechny fáze</option>
+                    <option value="group">Skupiny</option>
+                    <option value="round16">Osmifinále</option>
+                    <option value="quarter">Čtvrtfinále</option>
+                    <option value="semi">Semifinále</option>
+                    <option value="final">Finále</option>
+                </select>
+            </div>
+            <div id="matchesList" class="matches-list"></div>
+        </section>
+
+        <!-- Tab: Leaderboard -->
+        <section id="leaderboard" class="tab-content">
+            <div id="leaderboardTable" class="leaderboard"></div>
+        </section>
+
+        <!-- Tab: Moje tipy -->
+        <section id="my-bets" class="tab-content">
+            <div class="my-bets-container">
+                <h3>Tvoje tipy</h3>
+                <div id="myBetsList" class="my-bets-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal pro tipování -->
+    <div id="bettingModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div class="betting-form">
+                <div class="team-section">
+                    <div id="team1Info" class="team-info"></div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="team-section">
+                    <div id="team2Info" class="team-info"></div>
+                </div>
+            </div>
+            <div class="score-input">
+                <label>Tvůj tip skóre:</label>
+                <div class="score-inputs">
+                    <input type="number" id="score1" min="0" max="15" value="0" placeholder="Góly 1. týmu">
+                    <span class="divider">-</span>
+                    <input type="number" id="score2" min="0" max="15" value="0" placeholder="Góly 2. týmu">
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="saveBetBtn" class="btn btn-primary">Uložit tip</button>
+                <button id="cancelBetBtn" class="btn btn-secondary">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Golddiggers | Mistrovství Světa ve fotbale</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

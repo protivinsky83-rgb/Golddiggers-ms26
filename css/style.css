@@ -1,0 +1,603 @@
+/* CSS Styles */
+
+:root {
+    --primary-color: #1e40af;
+    --secondary-color: #f59e0b;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --dark-bg: #111827;
+    --light-bg: #f3f4f6;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 40px 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+header .subtitle {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* Navigační záložky */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* Obsah záložek */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Filtry */
+.filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+#searchInput,
+#stageFilter {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    flex: 1;
+    min-width: 200px;
+}
+
+#searchInput:focus,
+#stageFilter:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Seznam zápasů */
+.matches-list {
+    display: grid;
+    gap: 15px;
+}
+
+.match-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.match-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.match-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.match-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.match-date {
+    font-size: 0.9em;
+    color: var(--text-light);
+    min-width: 150px;
+}
+
+.teams {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team {
+    text-align: center;
+    min-width: 120px;
+}
+
+.team-name {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.team-flag {
+    font-size: 2.5em;
+    margin-bottom: 5px;
+}
+
+.vs {
+    font-weight: bold;
+    color: var(--text-light);
+    font-size: 1.2em;
+    margin: 0 15px;
+}
+
+.match-result {
+    min-width: 100px;
+    text-align: center;
+}
+
+.result-score {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.result-status {
+    font-size: 0.85em;
+    color: var(--success-color);
+}
+
+.my-bet {
+    background: var(--light-bg);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    color: var(--text-light);
+}
+
+.bet-action {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1e3a8a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.9em;
+}
+
+.btn-edit {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #d97706;
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* Leaderboard */
+.leaderboard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.leaderboard-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.leaderboard-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: var(--light-bg);
+}
+
+.rank {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: var(--primary-color);
+    min-width: 40px;
+}
+
+.rank.first {
+    color: #fbbf24;
+    font-size: 1.5em;
+}
+
+.rank.second {
+    color: #d1d5db;
+}
+
+.rank.third {
+    color: #d4713d;
+}
+
+/* Moje tipy */
+.my-bets-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.my-bets-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.bet-item {
+    background: var(--light-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bet-content {
+    flex: 1;
+}
+
+.bet-teams {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.bet-prediction {
+    color: var(--text-light);
+    font-size: 0.9em;
+}
+
+.bet-points {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--success-color);
+    margin-right: 15px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    float: right;
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: var(--text-dark);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.betting-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.team-section {
+    flex: 1;
+    text-align: center;
+}
+
+.team-info {
+    background: var(--light-bg);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.team-info .flag {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.team-info .name {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.vs-divider {
+    font-weight: bold;
+    color: var(--text-light);
+    font-size: 1.5em;
+    margin: 0 10px;
+}
+
+.score-input {
+    background: var(--light-bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.score-input label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.score-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.score-inputs input {
+    width: 80px;
+    padding: 12px;
+    font-size: 1.5em;
+    text-align: center;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.score-inputs input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.divider {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: var(--primary-color);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border-color);
+    margin-top: 50px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .match-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .match-info {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .tabs {
+        justify-content: center;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    #searchInput,
+    #stageFilter {
+        min-width: auto;
+    }
+
+    .betting-form {
+        flex-direction: column;
+    }
+
+    .teams {
+        flex-direction: column;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px 5px;
+        font-size: 0.9em;
+    }
+
+    .bet-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bet-points {
+        margin-right: 0;
+        margin-top: 10px;
+    }
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+
+.empty-state-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    font-size: 1.1em;
+}

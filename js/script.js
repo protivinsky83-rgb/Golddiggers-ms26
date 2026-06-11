@@ -11,7 +11,7 @@ let appState = {
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
     setupEventListeners();
-    initializeApp();
+    checkAuthStatus();
 });
 
 // Načtení dat
@@ -21,37 +21,51 @@ async function loadData() {
         const data = await response.json();
         appState.matches = data.matches;
         appState.users = data.users;
-        
-        // Nastavit prvního uživatele jako aktuální
-        appState.currentUser = appState.users[0];
-        
-        // Načíst tipy z localStorage
-        loadBetsFromStorage();
     } catch (error) {
         console.error('Chyba při načítání dat:', error);
     }
 }
 
-// Načtení tipů z localStorage
-function loadBetsFromStorage() {
-    const savedBets = localStorage.getItem('bets');
-    if (savedBets) {
-        try {
-            const bets = JSON.parse(savedBets);
-            appState.currentUser.bets = bets;
-        } catch (error) {
-            console.error('Chyba při načítání tipů:', error);
-        }
+// Kontrola přihlášení
+function checkAuthStatus() {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        appState.currentUser = JSON.parse(loggedInUser);
+        showAppScreen();
+    } else {
+        showLoginScreen();
     }
 }
 
-// Uložení tipů do localStorage
-function saveBetsToStorage() {
-    localStorage.setItem('bets', JSON.stringify(appState.currentUser.bets));
+// Přepnutí na přihlašovací obrazovku
+function showLoginScreen() {
+    document.getElementById('loginScreen').classList.add('active');
+    document.getElementById('appScreen').classList.remove('active');
+}
+
+// Přepnutí na aplikační obrazovku
+function showAppScreen() {
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('appScreen').classList.add('active');
+    document.getElementById('currentUserName').textContent = appState.currentUser.name;
+    loadUserBetsFromStorage();
+    initializeApp();
 }
 
 // Nastavení event listenerů
 function setupEventListeners() {
+    // Login/Signup tabs
+    document.querySelectorAll('.login-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            switchLoginTab(e.target.getAttribute('data-login-tab'));
+        });
+    });
+
+    // Forms
+    document.getElementById('signinForm').addEventListener('submit', handleSignIn);
+    document.getElementById('signupForm').addEventListener('submit', handleSignUp);
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
     // Kliknutí na záložky
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -76,6 +90,118 @@ function setupEventListeners() {
     });
 }
 
+// Přepínání přihlašovacích záložek
+function switchLoginTab(tabName) {
+    document.querySelectorAll('.login-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.login-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    document.getElementById(tabName).classList.add('active');
+    document.querySelector(`[data-login-tab="${tabName}"]`).classList.add('active');
+}
+
+// Přihlášení
+function handleSignIn(e) {
+    e.preventDefault();
+    const email = document.getElementById('signinEmail').value.toLowerCase();
+    const password = document.getElementById('signinPassword').value;
+    const errorDiv = document.getElementById('signinError');
+
+    // Hledat u��ivatele
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        appState.currentUser = user;
+        showAppScreen();
+        document.getElementById('signinForm').reset();
+    } else {
+        errorDiv.textContent = 'Nesprávný email nebo heslo!';
+        errorDiv.classList.add('show');
+    }
+}
+
+// Registrace
+function handleSignUp(e) {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value.toLowerCase();
+    const password = document.getElementById('signupPassword').value;
+    const password2 = document.getElementById('signupPassword2').value;
+    const errorDiv = document.getElementById('signupError');
+
+    // Validace
+    if (password !== password2) {
+        errorDiv.textContent = 'Hesla se neshodují!';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    if (password.length < 4) {
+        errorDiv.textContent = 'Heslo musí mít alespoň 4 znaky!';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Kontrola, zda uživatel existuje
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    if (users.find(u => u.email === email)) {
+        errorDiv.textContent = 'Tento email je již registrován!';
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Vytvoření nového uživatele
+    const newUser = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        password: password,
+        bets: [],
+        points: 0
+    };
+
+    users.push(newUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(users));
+    localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+    appState.currentUser = newUser;
+    showAppScreen();
+    document.getElementById('signupForm').reset();
+}
+
+// Odhlášení
+function handleLogout() {
+    localStorage.removeItem('loggedInUser');
+    appState.currentUser = null;
+    showLoginScreen();
+    document.getElementById('signinEmail').value = '';
+    document.getElementById('signinPassword').value = '';
+}
+
+// Načtení tipů uživatele
+function loadUserBetsFromStorage() {
+    const userBets = localStorage.getItem(`bets_${appState.currentUser.id}`);
+    if (userBets) {
+        try {
+            appState.currentUser.bets = JSON.parse(userBets);
+        } catch (error) {
+            console.error('Chyba při načítání tipů:', error);
+            appState.currentUser.bets = [];
+        }
+    } else {
+        appState.currentUser.bets = [];
+    }
+}
+
+// Uložení tipů uživatele
+function saveBetsToStorage() {
+    localStorage.setItem(`bets_${appState.currentUser.id}`, JSON.stringify(appState.currentUser.bets));
+}
+
 // Inicializace aplikace
 function initializeApp() {
     renderMatches();
@@ -85,21 +211,17 @@ function initializeApp() {
 
 // Přepínání záložek
 function switchTab(tabName) {
-    // Skrýt všechny záložky
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
 
-    // Deaktivovat všechny tlačítka
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
 
-    // Zobrazit vybranou záložku
     document.getElementById(tabName).classList.add('active');
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
-    // Aktualizovat obsah
     if (tabName === 'leaderboard') {
         renderLeaderboard();
     } else if (tabName === 'my-bets') {
@@ -128,7 +250,6 @@ function createMatchCard(match) {
     const card = document.createElement('div');
     card.className = 'match-card';
     
-    // Zjistit, zda je zápas již zahájen
     const matchDate = new Date(match.date + 'T' + match.time);
     const isLocked = new Date() > matchDate;
     
@@ -139,7 +260,6 @@ function createMatchCard(match) {
     let resultHTML = '';
     let myBetHTML = '';
 
-    // Vykreslit výsledek
     if (match.result) {
         resultHTML = `
             <div class="match-result">
@@ -149,7 +269,6 @@ function createMatchCard(match) {
         `;
     }
 
-    // Vykreslit můj tip
     const myBet = appState.currentUser.bets.find(b => b.matchId === match.id);
     if (myBet) {
         const points = calculatePoints(myBet, match);
@@ -212,7 +331,7 @@ function filterMatches() {
     container.innerHTML = '';
 
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>Žádné zápasy nebyl nalezeny</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>Žádné zápasy nebyly nalezeny</p></div>';
         return;
     }
 
@@ -225,12 +344,10 @@ function filterMatches() {
 function openBettingModal(match) {
     appState.selectedMatch = match;
 
-    // Naplnit modal
     document.getElementById('modalTitle').textContent = `${match.team1} vs ${match.team2}`;
     document.getElementById('team1Info').innerHTML = `<div class="flag">${match.flag1}</div><div class="name">${match.team1}</div>`;
     document.getElementById('team2Info').innerHTML = `<div class="flag">${match.flag2}</div><div class="name">${match.team2}</div>`;
 
-    // Načíst existující tip, pokud existuje
     const existingBet = appState.currentUser.bets.find(b => b.matchId === match.id);
     if (existingBet) {
         document.getElementById('score1').value = existingBet.score1;
@@ -240,7 +357,6 @@ function openBettingModal(match) {
         document.getElementById('score2').value = 0;
     }
 
-    // Zobrazit modal
     document.getElementById('bettingModal').classList.add('active');
 }
 
@@ -257,13 +373,11 @@ function saveBet() {
     const score1 = parseInt(document.getElementById('score1').value);
     const score2 = parseInt(document.getElementById('score2').value);
 
-    // Validace
     if (isNaN(score1) || isNaN(score2)) {
         alert('Prosím, zadejte platné skóre');
         return;
     }
 
-    // Hledat existující tip
     const existingBetIndex = appState.currentUser.bets.findIndex(b => b.matchId === appState.selectedMatch.id);
 
     const bet = {
@@ -276,17 +390,12 @@ function saveBet() {
     };
 
     if (existingBetIndex > -1) {
-        // Aktualizovat existující tip
         appState.currentUser.bets[existingBetIndex] = bet;
     } else {
-        // Přidat nový tip
         appState.currentUser.bets.push(bet);
     }
 
-    // Uložit do localStorage
     saveBetsToStorage();
-
-    // Aktualizovat zobrazení
     renderMatches();
     renderMyBets();
     
@@ -294,9 +403,8 @@ function saveBet() {
     alert('Tip byl úspěšně uložen!');
 }
 
-// Funkce pro výpočet bodů
+// Výpočet bodů
 function calculatePoints(bet, match) {
-    // Pokud zápas ještě neskončil, vrátit 0
     if (!match.result) {
         return 0;
     }
@@ -311,17 +419,24 @@ function calculatePoints(bet, match) {
         return 10;
     }
 
-    // Nejméně jeden tým má správný počet gólů = 5 bodů
-    if (betScore1 === actualScore1 || betScore2 === actualScore2) {
-        return 5;
+    // Remíza = 7 bodů
+    const betIsRemiza = betScore1 === betScore2;
+    const actualIsRemiza = actualScore1 === actualScore2;
+    if (betIsRemiza && actualIsRemiza) {
+        return 7;
     }
 
-    // Správný vítěz = 3 body
+    // Nejméně jeden tým má správný počet gólů = 3 body
+    if (betScore1 === actualScore1 || betScore2 === actualScore2) {
+        return 3;
+    }
+
+    // Správný vítěz = 5 bodů
     const betWinner = betScore1 > betScore2 ? 1 : (betScore1 < betScore2 ? -1 : 0);
     const actualWinner = actualScore1 > actualScore2 ? 1 : (actualScore1 < actualScore2 ? -1 : 0);
     
-    if (betWinner === actualWinner) {
-        return 3;
+    if (betWinner === actualWinner && betWinner !== 0 && actualWinner !== 0) {
+        return 5;
     }
 
     return 0;
@@ -332,10 +447,12 @@ function renderLeaderboard() {
     const container = document.getElementById('leaderboardTable');
 
     // Přepočítat body všech uživatelů
-    appState.users.forEach(user => {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    users.forEach(user => {
         let totalPoints = 0;
-        if (user.bets) {
-            user.bets.forEach(bet => {
+        const userBets = JSON.parse(localStorage.getItem(`bets_${user.id}`) || '[]');
+        if (userBets) {
+            userBets.forEach(bet => {
                 const match = appState.matches.find(m => m.id === bet.matchId);
                 if (match && match.result) {
                     totalPoints += calculatePoints(bet, match);
@@ -345,8 +462,7 @@ function renderLeaderboard() {
         user.points = totalPoints;
     });
 
-    // Seřadit uživatele podle bodů
-    const sortedUsers = [...appState.users].sort((a, b) => {
+    const sortedUsers = [...users].sort((a, b) => {
         return (b.points || 0) - (a.points || 0);
     });
 
@@ -370,8 +486,9 @@ function renderLeaderboard() {
         if (index === 2) rankClass = 'third';
 
         let correctBets = 0;
-        if (user.bets) {
-            user.bets.forEach(bet => {
+        const userBets = JSON.parse(localStorage.getItem(`bets_${user.id}`) || '[]');
+        if (userBets) {
+            userBets.forEach(bet => {
                 const match = appState.matches.find(m => m.id === bet.matchId);
                 if (match && match.result && calculatePoints(bet, match) > 0) {
                     correctBets++;

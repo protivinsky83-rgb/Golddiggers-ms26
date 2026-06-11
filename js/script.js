@@ -152,7 +152,8 @@ function createMatchCard(match) {
     // Vykreslit můj tip
     const myBet = appState.currentUser.bets.find(b => b.matchId === match.id);
     if (myBet) {
-        myBetHTML = `<div class="my-bet">Můj tip: ${myBet.score1} - ${myBet.score2}</div>`;
+        const points = calculatePoints(myBet, match);
+        myBetHTML = `<div class="my-bet">Můj tip: ${myBet.score1} - ${myBet.score2} <span style="color: #10b981; font-weight: bold;">+${points}b</span></div>`;
     }
 
     card.innerHTML = `
@@ -293,9 +294,56 @@ function saveBet() {
     alert('Tip byl úspěšně uložen!');
 }
 
+// Funkce pro výpočet bodů
+function calculatePoints(bet, match) {
+    // Pokud zápas ještě neskončil, vrátit 0
+    if (!match.result) {
+        return 0;
+    }
+
+    const betScore1 = bet.score1;
+    const betScore2 = bet.score2;
+    const actualScore1 = match.result.score1;
+    const actualScore2 = match.result.score2;
+
+    // Přesný výsledek = 10 bodů
+    if (betScore1 === actualScore1 && betScore2 === actualScore2) {
+        return 10;
+    }
+
+    // Nejméně jeden tým má správný počet gólů = 5 bodů
+    if (betScore1 === actualScore1 || betScore2 === actualScore2) {
+        return 5;
+    }
+
+    // Správný vítěz = 3 body
+    const betWinner = betScore1 > betScore2 ? 1 : (betScore1 < betScore2 ? -1 : 0);
+    const actualWinner = actualScore1 > actualScore2 ? 1 : (actualScore1 < actualScore2 ? -1 : 0);
+    
+    if (betWinner === actualWinner) {
+        return 3;
+    }
+
+    return 0;
+}
+
 // Vykreslení leaderboardu
 function renderLeaderboard() {
     const container = document.getElementById('leaderboardTable');
+
+    // Přepočítat body všech uživatelů
+    appState.users.forEach(user => {
+        let totalPoints = 0;
+        if (user.bets) {
+            user.bets.forEach(bet => {
+                const match = appState.matches.find(m => m.id === bet.matchId);
+                if (match && match.result) {
+                    totalPoints += calculatePoints(bet, match);
+                }
+            });
+        }
+        user.points = totalPoints;
+    });
 
     // Seřadit uživatele podle bodů
     const sortedUsers = [...appState.users].sort((a, b) => {
@@ -321,7 +369,16 @@ function renderLeaderboard() {
         if (index === 1) rankClass = 'second';
         if (index === 2) rankClass = 'third';
 
-        const correctBets = user.bets ? user.bets.length : 0;
+        let correctBets = 0;
+        if (user.bets) {
+            user.bets.forEach(bet => {
+                const match = appState.matches.find(m => m.id === bet.matchId);
+                if (match && match.result && calculatePoints(bet, match) > 0) {
+                    correctBets++;
+                }
+            });
+        }
+        
         const points = user.points || 0;
 
         html += `
@@ -357,13 +414,15 @@ function renderMyBets() {
         const match = appState.matches.find(m => m.id === bet.matchId);
         if (!match) return;
 
+        const points = calculatePoints(bet, match);
+
         html += `
             <div class="bet-item">
                 <div class="bet-content">
                     <div class="bet-teams">${bet.team1} vs ${bet.team2}</div>
                     <div class="bet-prediction">Tvůj tip: <strong>${bet.score1} - ${bet.score2}</strong></div>
                 </div>
-                <div class="bet-points">+0</div>
+                <div class="bet-points">+${points}</div>
                 <div class="bet-action">
                     <button class="btn btn-edit btn-sm" onclick="editBet(${bet.matchId})">Upravit</button>
                     <button class="btn btn-delete btn-sm" onclick="deleteBet(${bet.matchId})">Smazat</button>
